@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".QuestActivity">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/chat_background2" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+
+                    app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <LinearLayout
+                    android:id="@+id/linearLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/answers_box_background"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                        <TextView
+                            android:id="@+id/typingStatusTV"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom|center_horizontal"
+                            android:layout_margin="15dp"
+                            android:textAlignment="center"
+                            android:textColor="@color/colorOrange"
+                            android:textSize="16sp"
+                            tools:text="Typing..." />
+
+                        <Button
+                            android:id="@+id/ansBtn1"
+                            android:layout_width="match_parent"
+                            android:layout_height="30dp"
+                            android:layout_marginHorizontal="15dp"
+                            android:layout_marginBottom="15dp"
+                            android:background="@drawable/button_background"
+                            android:backgroundTint="@android:color/white"
+                            android:textAlignment="center"
+                            android:textColor="@android:color/black" />
+
+                        <Button
+                            android:id="@+id/ansBtn2"
+                            android:layout_width="match_parent"
+                            android:layout_height="30dp"
+                            android:layout_marginHorizontal="15dp"
+                            android:layout_marginBottom="15dp"
+                            android:background="@drawable/button_background"
+                            android:backgroundTint="@android:color/white"
+                            android:textAlignment="center"
+                            android:textColor="@android:color/black" />
+
+                        <Button
+                            android:id="@+id/ansBtn3"
+                            android:layout_width="match_parent"
+                            android:layout_height="30dp"
+                            android:layout_marginHorizontal="15dp"
+                            android:layout_marginBottom="15dp"
+                            android:background="@drawable/button_background"
+                            android:backgroundTint="@android:color/white"
+                            android:textAlignment="center"
+                            android:textColor="@android:color/black" />
+
+                        <Button
+                            android:id="@+id/ansBtn4"
+                            android:layout_width="match_parent"
+                            android:layout_height="30dp"
+                            android:layout_marginHorizontal="15dp"
+                            android:layout_marginBottom="15dp"
+                            android:background="@drawable/button_background"
+                            android:backgroundTint="@android:color/white"
+                            android:textAlignment="center"
+                            android:textColor="@android:color/black" />
+                </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</FrameLayout>

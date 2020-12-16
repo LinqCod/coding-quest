@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="15dp"
+    android:layout_marginStart="15dp"
+    android:layout_marginEnd="100dp"
+    android:paddingVertical="10dp"
+    android:paddingHorizontal="15dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/friend_msg_background"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/textMsg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        tools:text="Здарова! Ну как, твое предложение помочь еще в силе?)"/>
+
+    <ImageView
+        android:id="@+id/imageMsg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="5dp"
+        tools:src="@drawable/q_10"
+        android:adjustViewBounds="true" />
+
+</LinearLayout>
