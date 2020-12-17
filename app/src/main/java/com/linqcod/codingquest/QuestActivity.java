@@ -227,6 +227,8 @@ public class QuestActivity extends AppCompatActivity {
         questions.add(new Question("Что выведет программа?", R.drawable.q_9,true, new String[]{"Ошибка", "Ничего", "0"}, "Ошибка"));
         questions.add(new Question("Что выведет программа?", R.drawable.q_10,true, new String[]{"True True", "True False", "False True"}, "False True"));
 
+        //TODO: OutOfBounds when all questions are shown
+
         thanksMsg.add("Спасибо! Скоро кину некст вопрос");
         thanksMsg.add("Океюшки");
         thanksMsg.add("Спасибо большое! Ща след вопрос кину.");
