@@ -45,11 +45,13 @@ public class QuestActivity extends AppCompatActivity {
         new Thread() {
             @Override
             public void run() {
-                startTyping(new Message("Твое предложение еще в силе по поводу теста по Java?))", null, 0, false));
-                startTyping(new Message("Отлично, скоро кину первое задание!)", null, 0, false));
+                startTyping(new Message("Твое предложение еще в силе по поводу теста по Java?))", R.drawable.test_photo, 0, false));
+                startTyping(new Message("Отлично, скоро кину первое задание!)", R.drawable.test_photo, 0, false));
+                startTyping(new Message("Отлично, скоро кину первое задание!)", R.drawable.test_photo, 1, false));
                 startTyping(new Message("awdwdw", R.drawable.q_10, 0, true));
                 startTyping(new Message("1!", R.drawable.q_4, 0, true));
                 startTyping(new Message("2!", R.drawable.q_5, 0, true));
+                startTyping(new Message("Отлично, скоро кину первое задание!)", R.drawable.test_photo, 1, false));
                 startTyping(new Message("3!", R.drawable.q_6, 0, true));
                 startTyping(new Message("4!", R.drawable.q_8, 0, true));
                 startTyping(new Message("5", R.drawable.q_9, 0, true));
@@ -94,7 +96,7 @@ public class QuestActivity extends AppCompatActivity {
             public void run() {
                  chatAdapter.notifyItemInserted(messages.size()-1);
 //                chatAdapter.notifyDataSetChanged();
-//                recyclerView.getLayoutManager().scrollToPosition(messages.size()-1);
+                 recyclerView.getLayoutManager().scrollToPosition(messages.size()-1);
             }
         });
     }

@@ -18,4 +18,13 @@
         android:textColor="@android:color/black"
         tools:text="Привет. да, конечно!"/>
 
+    <ImageView
+        android:id="@+id/imageMsg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="5dp"
+        tools:src="@drawable/q_10"
+        android:adjustViewBounds="true" />
+
 </LinearLayout>

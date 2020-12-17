@@ -1,7 +1,6 @@
 package com.linqcod.codingquest;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +29,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
     @Override
     public ChatViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = null;
+        View view = inflater.inflate(R.layout.friend_msg_box, parent, false);
         if(viewType == MSG_TYPE_FRIEND) {
             view = inflater.inflate(R.layout.friend_msg_box, parent, false);
         }
@@ -42,8 +41,10 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ChatViewHolder holder, int position) {
-        holder.msgTV.setText(messages.get(position).getContent());
-        if(messages.get(holder.getAdapterPosition()).getUserId() == 0 && messages.get(holder.getAdapterPosition()).getImageUri() != null) holder.imageIV.setImageResource(messages.get(position).getImageUri());
+        holder.msgTV.setText(messages.get(holder.getAdapterPosition()).getContent());
+        holder.imageIV.setImageResource(messages.get(holder.getAdapterPosition()).getImageUri());
+        if(!messages.get(holder.getAdapterPosition()).isHasImage()) holder.imageIV.setVisibility(View.GONE);
+        else holder.imageIV.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -65,7 +66,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
 
         public ChatViewHolder(@NonNull View itemView) {
             super(itemView);
-
             msgTV = itemView.findViewById(R.id.textMsg);
             imageIV = itemView.findViewById(R.id.imageMsg);
         }

@@ -3,11 +3,11 @@ package com.linqcod.codingquest;
 public class Message {
 
     private String content;
-    private Integer imageUri;
+    private int imageUri;
     private int userId;
     private boolean hasImage;
 
-    public Message(String content, Integer imageUri, int userId, boolean hasImage) {
+    public Message(String content, int imageUri, int userId, boolean hasImage) {
         this.content = content;
         this.imageUri = imageUri;
         this.userId = userId;
@@ -22,7 +22,7 @@ public class Message {
         this.content = content;
     }
 
-    public Integer getImageUri() {
+    public int getImageUri() {
         return imageUri;
     }
 
