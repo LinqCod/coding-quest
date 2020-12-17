@@ -81,16 +81,6 @@
                             android:textAlignment="center"
                             android:textColor="@android:color/black" />
 
-                        <Button
-                            android:id="@+id/ansBtn4"
-                            android:layout_width="match_parent"
-                            android:layout_height="30dp"
-                            android:layout_marginHorizontal="15dp"
-                            android:layout_marginBottom="15dp"
-                            android:background="@drawable/button_background"
-                            android:backgroundTint="@android:color/white"
-                            android:textAlignment="center"
-                            android:textColor="@android:color/black" />
                 </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -5,8 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-import android.os.Debug;
-import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,14 +16,17 @@ public class QuestActivity extends AppCompatActivity {
 
     private ArrayList<Message> messages = new ArrayList<>();
     private ArrayList<Question> questions = new ArrayList<>();
+    private ArrayList<String> nextQuestionMsg = new ArrayList<>();
+    private ArrayList<String> thanksMsg = new ArrayList<>();
+
+    private int rightAnswers = 0;
+    private Question currentQuestion;
+    private int currentQuestionId;
 
     private RecyclerView recyclerView;
     private TextView typingIndicatorTV;
 
-    private Button ansButton1;
-    private Button ansButton2;
-    private Button ansButton3;
-    private Button ansButton4;
+    private Button[] buttons = new Button[3];
 
     ChatAdapter chatAdapter;
 
@@ -38,35 +40,141 @@ public class QuestActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerview);
         typingIndicatorTV = findViewById(R.id.typingStatusTV);
 
+        buttons[0] = findViewById(R.id.ansBtn1);
+        buttons[1] = findViewById(R.id.ansBtn2);
+        buttons[2] = findViewById(R.id.ansBtn3);
+
         chatAdapter = new ChatAdapter(this, messages);
         recyclerView.setAdapter(chatAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        startQuest();
+    }
+
+    private void disableButtons() {
+        buttons[0].setVisibility(View.GONE);
+        buttons[1].setVisibility(View.GONE);
+        buttons[2].setVisibility(View.GONE);
+    }
+
+    private void setUpButtons() {
+        buttons[0].setVisibility(View.VISIBLE);
+        buttons[1].setVisibility(View.VISIBLE);
+        buttons[2].setVisibility(View.VISIBLE);
+        buttons[0].setText(currentQuestion.getAnswers()[0]);
+        buttons[1].setText(currentQuestion.getAnswers()[1]);
+        buttons[2].setText(currentQuestion.getAnswers()[2]);
+    }
+
+    private void startQuest() {
+        disableButtons();
         new Thread() {
             @Override
             public void run() {
-                startTyping(new Message("Твое предложение еще в силе по поводу теста по Java?))", R.drawable.test_photo, 0, false));
-                startTyping(new Message("Отлично, скоро кину первое задание!)", R.drawable.test_photo, 0, false));
-                startTyping(new Message("Отлично, скоро кину первое задание!)", R.drawable.test_photo, 1, false));
-                startTyping(new Message("awdwdw", R.drawable.q_10, 0, true));
-                startTyping(new Message("1!", R.drawable.q_4, 0, true));
-                startTyping(new Message("2!", R.drawable.q_5, 0, true));
-                startTyping(new Message("Отлично, скоро кину первое задание!)", R.drawable.test_photo, 1, false));
-                startTyping(new Message("3!", R.drawable.q_6, 0, true));
-                startTyping(new Message("4!", R.drawable.q_8, 0, true));
-                startTyping(new Message("5", R.drawable.q_9, 0, true));
-                startTyping(new Message("6", R.drawable.q_10, 0, true));
+                startTyping(new Message(questions.get(0).getQuestion(), questions.get(0).getImageUri(), 0, questions.get(0).isHasImage()));
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        buttons[0].setVisibility(View.VISIBLE);
+                        buttons[1].setVisibility(View.VISIBLE);
+                        buttons[0].setText(questions.get(0).getAnswers()[0]);
+                        buttons[1].setText(questions.get(0).getAnswers()[1]);
+                    }
+                });
+                buttons[0].setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        sendMessage(new Message("Разумеется! Я же обещал)", R.drawable.balvanka, 1, false));
+                        disableButtons();
+                        new Thread() {
+                            @Override
+                            public void run() {
+                                startTyping(new Message("Спасибо огромное! Тогда скоро пришлю первое задание.", R.drawable.balvanka, 0, false));
+                                //TODO: fix if 0 index -> arrayOutOfBound because 2 answers, not 3
+                                askQuestion(currentQuestionId, "Так, вот первый вопрос: ", thanksMsg.get(currentQuestionId-1));
+                            }
+                        }.start();
+                    }
+                });
+                buttons[1].setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        finish();
+                    }
+                });
 
             }
         }.start();
     }
 
-    private void startTyping(Message msg) {
+    private void askQuestion(int qIndex, final String firstStr, final String secondStr) {
+        disableButtons();
+        currentQuestion = questions.get(currentQuestionId);
+        new Thread() {
+            @Override
+            public void run() {
+                startTyping(new Message(firstStr + currentQuestion.getQuestion(), currentQuestion.getImageUri(), 0, currentQuestion.isHasImage()));
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        setUpButtons();
+                    }
+                });
+                buttons[0].setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        sendMessage(new Message(currentQuestion.getAnswers()[0], R.drawable.balvanka, 1, false));
+                        if(currentQuestion.answer(currentQuestion.getAnswers()[0])) rightAnswers++;
+                        disableButtons();
+                        new Thread() {
+                            @Override
+                            public void run() {
+                                startTyping(new Message(secondStr, R.drawable.balvanka, 0, false));
+                                askQuestion(++currentQuestionId, "Так, вот следующий вопрос: ",  thanksMsg.get(currentQuestionId-1));
+                            }
+                        }.start();
+                    }
+                });
+                buttons[1].setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        sendMessage(new Message(currentQuestion.getAnswers()[1], R.drawable.balvanka, 1, false));
+                        if(currentQuestion.answer(currentQuestion.getAnswers()[1])) rightAnswers++;
+                        disableButtons();
+                        new Thread() {
+                            @Override
+                            public void run() {
+                                startTyping(new Message(secondStr, R.drawable.balvanka, 0, false));
+                                askQuestion(++currentQuestionId, "Так, вот следующий вопрос: ",  thanksMsg.get(currentQuestionId-1));
+                            }
+                        }.start();
+                    }
+                });
+                buttons[2].setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        sendMessage(new Message(currentQuestion.getAnswers()[2], R.drawable.balvanka, 1, false));
+                        if(currentQuestion.answer(currentQuestion.getAnswers()[2])) rightAnswers++;
+                        disableButtons();
+                        new Thread() {
+                            @Override
+                            public void run() {
+                                startTyping(new Message(secondStr, R.drawable.balvanka, 0, false));
+                                askQuestion(++currentQuestionId, "Так, вот следующий вопрос: ",  thanksMsg.get(currentQuestionId-1));
+                            }
+                        }.start();
+                    }
+                });
+            }
+        }.start();
+    }
+
+    private void startTyping(final Message msg) {
         int typingTime = 1;
         int indicatorDotsCount = 0;
-        while(typingTime <= 5) {
+        while(typingTime <= 6) {
             try {
-                Thread.sleep(300);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -90,28 +198,45 @@ public class QuestActivity extends AppCompatActivity {
                 typingIndicatorTV.setText("");
             }
         });
-        messages.add(msg);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                 chatAdapter.notifyItemInserted(messages.size()-1);
-//                chatAdapter.notifyDataSetChanged();
-                 recyclerView.getLayoutManager().scrollToPosition(messages.size()-1);
+                sendMessage(msg);
             }
         });
     }
 
+
+    private void sendMessage(Message msg) {
+        messages.add(msg);
+        chatAdapter.notifyItemInserted(messages.size()-1);
+        recyclerView.getLayoutManager().scrollToPosition(messages.size()-1);
+    }
+
     private void initializeQuestions() {
-        questions.add(new Question("Поддерживает ли язык Java множественное наследование?", -1, new String[]{"Да", "Нет", "Неизвестно"}, "Нет"));
-        questions.add(new Question("Результат выражения 1.0/0?", -1, new String[]{"Выдаст ошибку компиляции", "Проработает успешно", "Выдаст ArithmeticException"}, "Проработает успешно"));
-        questions.add(new Question("Что верно для классов StringBuffer и StringBuilder?", -1, new String[]{"Методы StringBuilder синхронизированы", "Методы StringBuffer синхронизированы", "Оба класса синхронизированы", "Оба класса асинхронны"}, "Методы StringBuffer синхронизированы"));
-        questions.add(new Question("Что выведет программа?", R.drawable.q_4, new String[]{"11", "0", "1", "Ошибка"}, "11"));
-        questions.add(new Question("Что выведет программа?", R.drawable.q_5, new String[]{"1", "2", "3", "4"}, "2"));
-        questions.add(new Question("Что выведет программа?", R.drawable.q_6, new String[]{"Static method called", "CompileTimeError", "RuntimeError"}, "Static method called"));
-        questions.add(new Question("Является ли Java 100% объектно-ориентированным ЯП?", -1, new String[]{"Да", "Нет", "Неизвестно"}, "Нет"));
-        questions.add(new Question("Что выведет программа?", R.drawable.q_8, new String[]{"Ошибка", "Ничего", "0", "1"}, "Ошибка"));
-        questions.add(new Question("Что выведет программа?", R.drawable.q_9, new String[]{"Ошибка", "Ничего", "0", "1"}, "Ошибка"));
-        questions.add(new Question("Что выведет программа?", R.drawable.q_10, new String[]{"True True", "True False", "False True", "False False"}, "False True"));
+        currentQuestionId = 1;
+        questions.add(new Question("Твое предложение еще в силе по поводу теста по Java?))", R.drawable.balvanka, false, new String[]{"Да", "Нет"}, "Да"));
+        questions.add(new Question("Поддерживает ли язык Java множественное наследование?", R.drawable.balvanka,false, new String[]{"Да", "Нет", "Неизвестно"}, "Нет"));
+        questions.add(new Question("Результат выражения 1.0/0?", R.drawable.balvanka,false, new String[]{"Выдаст ошибку компиляции", "Проработает успешно", "Выдаст ArithmeticException"}, "Проработает успешно"));
+        questions.add(new Question("Что верно для классов StringBuffer и StringBuilder?", R.drawable.balvanka,false, new String[]{"Методы StringBuilder синхронизированы", "Методы StringBuffer синхронизированы", "Оба класса синхронизированы"}, "Методы StringBuffer синхронизированы"));
+        questions.add(new Question("Что выведет программа?", R.drawable.q_4,true, new String[]{"11", "0", "Ошибка"}, "11"));
+        questions.add(new Question("Что выведет программа?", R.drawable.q_5,true, new String[]{"1", "2", "3"}, "2"));
+        questions.add(new Question("Что выведет программа?", R.drawable.q_6,true, new String[]{"Static method called", "CompileTimeError", "RuntimeError"}, "Static method called"));
+        questions.add(new Question("Является ли Java 100% объектно-ориентированным ЯП?", R.drawable.balvanka,false, new String[]{"Да", "Нет", "Неизвестно"}, "Нет"));
+        questions.add(new Question("Что выведет программа?", R.drawable.q_8,true, new String[]{"Ошибка", "Ничего", "0"}, "Ошибка"));
+        questions.add(new Question("Что выведет программа?", R.drawable.q_9,true, new String[]{"Ошибка", "Ничего", "0"}, "Ошибка"));
+        questions.add(new Question("Что выведет программа?", R.drawable.q_10,true, new String[]{"True True", "True False", "False True"}, "False True"));
+
+        thanksMsg.add("Спасибо! Скоро кину некст вопрос");
+        thanksMsg.add("Океюшки");
+        thanksMsg.add("Спасибо большое! Ща след вопрос кину.");
+        thanksMsg.add("Благодарствую!)");
+        thanksMsg.add("Спасибо, надеюсь, что не отвлекаю))");
+        thanksMsg.add("От души)");
+        thanksMsg.add("Спасибо.");
+        thanksMsg.add("Святой ты человек!)");
+        thanksMsg.add("Капец, я вообще это не понимаю... Благодарю)");
+        thanksMsg.add("Ты просто машина!) Посмотрим, что будет по итогу!");
     }
 
 }
