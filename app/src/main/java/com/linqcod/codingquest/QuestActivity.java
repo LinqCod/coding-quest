@@ -90,8 +90,7 @@ public class QuestActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 startTyping(new Message("Спасибо огромное! Тогда скоро пришлю первое задание.", R.drawable.balvanka, 0, false));
-                                //TODO: fix if 0 index -> arrayOutOfBound because 2 answers, not 3
-                                askQuestion(currentQuestionId, "Так, вот первый вопрос: ", thanksMsg.get(currentQuestionId-1));
+                                askQuestion("Так, вот первый вопрос: ", thanksMsg.get(currentQuestionId-1));
                             }
                         }.start();
                     }
@@ -107,7 +106,7 @@ public class QuestActivity extends AppCompatActivity {
         }.start();
     }
 
-    private void askQuestion(int qIndex, final String firstStr, final String secondStr) {
+    private void askQuestion(final String firstStr, final String secondStr) {
         disableButtons();
         currentQuestion = questions.get(currentQuestionId);
         new Thread() {
@@ -130,7 +129,12 @@ public class QuestActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 startTyping(new Message(secondStr, R.drawable.balvanka, 0, false));
-                                askQuestion(++currentQuestionId, "Так, вот следующий вопрос: ",  thanksMsg.get(currentQuestionId-1));
+                                ++currentQuestionId;
+                                if(currentQuestionId < questions.size())
+                                    askQuestion(nextQuestionMsg.get(currentQuestionId-1),  thanksMsg.get(currentQuestionId-1));
+                                else {
+                                    results();
+                                }
                             }
                         }.start();
                     }
@@ -145,7 +149,12 @@ public class QuestActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 startTyping(new Message(secondStr, R.drawable.balvanka, 0, false));
-                                askQuestion(++currentQuestionId, "Так, вот следующий вопрос: ",  thanksMsg.get(currentQuestionId-1));
+                                ++currentQuestionId;
+                                if(currentQuestionId < questions.size())
+                                    askQuestion(nextQuestionMsg.get(currentQuestionId-1),  thanksMsg.get(currentQuestionId-1));
+                                else {
+                                    results();
+                                }
                             }
                         }.start();
                     }
@@ -160,7 +169,12 @@ public class QuestActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 startTyping(new Message(secondStr, R.drawable.balvanka, 0, false));
-                                askQuestion(++currentQuestionId, "Так, вот следующий вопрос: ",  thanksMsg.get(currentQuestionId-1));
+                                ++currentQuestionId;
+                                if(currentQuestionId < questions.size())
+                                    askQuestion(nextQuestionMsg.get(currentQuestionId-1),  thanksMsg.get(currentQuestionId-1));
+                                else {
+                                    results();
+                                }
                             }
                         }.start();
                     }
@@ -169,12 +183,33 @@ public class QuestActivity extends AppCompatActivity {
         }.start();
     }
 
+    private void results() {
+        disableButtons();
+        startTyping(new Message("Огромное спасибо за помощь!!!!", R.drawable.balvanka, 0, false));
+        startTyping(new Message("Да погоди, еще резы не пришли)", R.drawable.balvanka, 1, false));
+        startTyping(new Message("Да все равно, я в любом случае хуже бы ответил))", R.drawable.balvanka, 0, false));
+        startTyping(new Message("Ну что, вот результат: " + rightAnswers + "/" + (questions.size()-1) + ", спасибо еще раз)", R.drawable.thanks_picture, 0, true));
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                buttons[0].setVisibility(View.VISIBLE);
+                buttons[0].setText("Выйти");
+                buttons[0].setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        finish();
+                    }
+                });
+            }
+        });
+    }
+
     private void startTyping(final Message msg) {
         int typingTime = 1;
         int indicatorDotsCount = 0;
         while(typingTime <= 6) {
             try {
-                Thread.sleep(1000);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -206,7 +241,6 @@ public class QuestActivity extends AppCompatActivity {
         });
     }
 
-
     private void sendMessage(Message msg) {
         messages.add(msg);
         chatAdapter.notifyItemInserted(messages.size()-1);
@@ -215,19 +249,17 @@ public class QuestActivity extends AppCompatActivity {
 
     private void initializeQuestions() {
         currentQuestionId = 1;
-        questions.add(new Question("Твое предложение еще в силе по поводу теста по Java?))", R.drawable.balvanka, false, new String[]{"Да", "Нет"}, "Да"));
+        questions.add(new Question("Привет! Твое предложение еще в силе по поводу теста по Java?))", R.drawable.balvanka, false, new String[]{"Да", "Нет"}, "Да"));
         questions.add(new Question("Поддерживает ли язык Java множественное наследование?", R.drawable.balvanka,false, new String[]{"Да", "Нет", "Неизвестно"}, "Нет"));
         questions.add(new Question("Результат выражения 1.0/0?", R.drawable.balvanka,false, new String[]{"Выдаст ошибку компиляции", "Проработает успешно", "Выдаст ArithmeticException"}, "Проработает успешно"));
         questions.add(new Question("Что верно для классов StringBuffer и StringBuilder?", R.drawable.balvanka,false, new String[]{"Методы StringBuilder синхронизированы", "Методы StringBuffer синхронизированы", "Оба класса синхронизированы"}, "Методы StringBuffer синхронизированы"));
         questions.add(new Question("Что выведет программа?", R.drawable.q_4,true, new String[]{"11", "0", "Ошибка"}, "11"));
         questions.add(new Question("Что выведет программа?", R.drawable.q_5,true, new String[]{"1", "2", "3"}, "2"));
-        questions.add(new Question("Что выведет программа?", R.drawable.q_6,true, new String[]{"Static method called", "CompileTimeError", "RuntimeError"}, "Static method called"));
+        questions.add(new Question("Что выведет программа?", R.drawable.q_6,true, new String[]{"RuntimeError", "CompileTimeError", "Static method called"}, "Static method called"));
         questions.add(new Question("Является ли Java 100% объектно-ориентированным ЯП?", R.drawable.balvanka,false, new String[]{"Да", "Нет", "Неизвестно"}, "Нет"));
-        questions.add(new Question("Что выведет программа?", R.drawable.q_8,true, new String[]{"Ошибка", "Ничего", "0"}, "Ошибка"));
-        questions.add(new Question("Что выведет программа?", R.drawable.q_9,true, new String[]{"Ошибка", "Ничего", "0"}, "Ошибка"));
+        questions.add(new Question("Что выведет программа?", R.drawable.q_8,true, new String[]{"0", "Ничего", "Ошибка"}, "Ошибка"));
+        questions.add(new Question("Что выведет программа?", R.drawable.q_9,true, new String[]{"0", "Ничего", "Ошибка"}, "Ошибка"));
         questions.add(new Question("Что выведет программа?", R.drawable.q_10,true, new String[]{"True True", "True False", "False True"}, "False True"));
-
-        //TODO: OutOfBounds when all questions are shown
 
         thanksMsg.add("Спасибо! Скоро кину некст вопрос");
         thanksMsg.add("Океюшки");
@@ -239,6 +271,17 @@ public class QuestActivity extends AppCompatActivity {
         thanksMsg.add("Святой ты человек!)");
         thanksMsg.add("Капец, я вообще это не понимаю... Благодарю)");
         thanksMsg.add("Ты просто машина!) Посмотрим, что будет по итогу!");
+
+        nextQuestionMsg.add("Так, вот след вопрос: ");
+        nextQuestionMsg.add("Воть вопрос: ");
+        nextQuestionMsg.add("Памагии): ");
+        nextQuestionMsg.add("Что скажешь?): ");
+        nextQuestionMsg.add("Тек-с, вот пятый вопросец: ");
+        nextQuestionMsg.add("Мне кажется, что 2 ответ: ");
+        nextQuestionMsg.add("Так, вот вопросик: ");
+        nextQuestionMsg.add("Что это вообще 0_0: ");
+        nextQuestionMsg.add("Ну, я в тебя верю)): ");
+        nextQuestionMsg.add("Всёё, это ласт: ");
     }
 
 }
